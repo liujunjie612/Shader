@@ -1,4 +1,7 @@
-﻿Shader "Junjie/ClipObjShader" {
+﻿// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Junjie/ClipObjShader" {
     Properties {
  
     }
@@ -28,15 +31,15 @@ float4 cNormal;
 v2f vert(appdata_full i)
 {
     v2f o;
-    o.pos = mul(UNITY_MATRIX_MVP, i.vertex);
+    o.pos = UnityObjectToClipPos(i.vertex);
     float3 ld = ObjSpaceLightDir(i.vertex);
     ld = normalize(ld);
     //对于填补的洞口，使用剪切方向作为法线，计算光照
     o.vc = max(0, dot(cNormal.xyz, ld));
     o.px = i.vertex / i.vertex.w;
     //float4 wPos=
-    o.cp = mul(_World2Object, cPos).xyz;
-    o.cn = mul(_World2Object, cNormal).xyz;
+    o.cp = mul(unity_WorldToObject, cPos).xyz;
+    o.cn = mul(unity_WorldToObject, cNormal).xyz;
  
     return o;
 }
@@ -74,14 +77,14 @@ float4 cNormal;
 v2f vert(appdata_full i)
 {
     v2f o;
-    o.pos = mul(UNITY_MATRIX_MVP, i.vertex);
+    o.pos = UnityObjectToClipPos(i.vertex);
     float3 ld = ObjSpaceLightDir(i.vertex);
     ld = normalize(ld);
     o.vc = max(0, dot(i.normal, ld));//正常计算光照
     o.px = i.vertex / i.vertex.w;
  
-    o.cp = mul(_World2Object, cPos).xyz;
-    o.cn = mul(_World2Object, cNormal).xyz;
+    o.cp = mul(unity_WorldToObject, cPos).xyz;
+    o.cn = mul(unity_WorldToObject, cNormal).xyz;
  
     return o;
 }
